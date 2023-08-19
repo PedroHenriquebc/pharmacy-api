@@ -38,44 +38,44 @@ public class UserController {
         List<UserModel> userList = userRepository.findAll();
         if (!userList.isEmpty()) {
             for (UserModel user : userList) {
-                String cpf = user.getCpf();
-                user.add(linkTo(methodOn(UserController.class).findUser(cpf)).withSelfRel());
+                String id = user.getSusCard();
+                user.add(linkTo(methodOn(UserController.class).findUser(id)).withSelfRel());
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(userList);
     }
 
-    @GetMapping("/user/{cpf}")
-    public ResponseEntity<Object> findUser(@PathVariable(value = "cpf") String cpf) {
-        boolean userExists = userRepository.findByCpf(cpf).isPresent();
+    @GetMapping("/user/{susCard}")
+    public ResponseEntity<Object> findUser(@PathVariable(value = "susCard") String susCard) {
+        boolean userExists = userRepository.findById(susCard).isPresent();
         if (!userExists) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("CPF not registered");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not registered");
         } else {
-            var userModel = userRepository.findByCpf(cpf).get();
+            var userModel = userRepository.findById(susCard).get();
             userModel.add(linkTo(methodOn(UserController.class).findAll()).withRel("Users list"));
             return ResponseEntity.status(HttpStatus.OK).body(userModel);
         }
     }
 
-    @DeleteMapping("/user/{cpf}")
-    public ResponseEntity<Object> deleteUser(@PathVariable(value = "cpf") String cpf) {
-        boolean userExists = userRepository.findByCpf(cpf).isPresent();
+    @DeleteMapping("/user/{susCard}")
+    public ResponseEntity<Object> deleteUser(@PathVariable(value = "susCard") String susCard) {
+        boolean userExists = userRepository.findById(susCard).isPresent();
         if (!userExists) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("CPF not registered");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not registered");
         } else {
-            var userModel = userRepository.findByCpf(cpf).get();
+            var userModel = userRepository.findById(susCard).get();
             userRepository.delete(userModel);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User deleted");
         }
     }
 
-    @PutMapping("/user/{cpf}")
-    public ResponseEntity<Object> updateUser(@PathVariable(value = "cpf") String cpf, @RequestBody @Valid UserModel oldUser) {
-        boolean userExists = userRepository.findByCpf(cpf).isPresent();
+    @PutMapping("/user/{susCard}")
+    public ResponseEntity<Object> updateUser(@PathVariable(value = "susCard") String susCard, @RequestBody @Valid UserModel oldUser) {
+        boolean userExists = userRepository.findById(susCard).isPresent();
         if (!userExists) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("CPF not registered");
         } else {
-            var updatedUser = userRepository.findByCpf(cpf).get();
+            var updatedUser = userRepository.findById(susCard).get();
             BeanUtils.copyProperties(oldUser, updatedUser);
             return ResponseEntity.status(HttpStatus.OK).body(userRepository.save(updatedUser));
         }

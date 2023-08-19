@@ -1,15 +1,17 @@
 package phbc.diabeticregistry.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.hateoas.RepresentationModel;
+import phbc.diabeticregistry.enums.Diabetes;
 
 @Entity
 @Data
@@ -44,6 +46,10 @@ public class UserModel extends RepresentationModel<UserModel> {
     @Size(min = 5, max = 255, message = "The insulin posology must have between 5 and 255 letters.")
     @Column(name = "insulin_posology")
     private String insulinPosology;
-//    @NotBlank
-//    private DiabetesType diabetesType;
+
+    @NotNull(message = "Diabetes type is mandatory.")
+    @Column(name = "diabetes_type", columnDefinition = "diabetes")
+    @Enumerated(EnumType.STRING)
+    @Type(PostgreSQLEnumType.class)
+    private Diabetes diabetesType;
 }

@@ -1,0 +1,1 @@
+alter table tb_user add column diabetes_type diabetes;

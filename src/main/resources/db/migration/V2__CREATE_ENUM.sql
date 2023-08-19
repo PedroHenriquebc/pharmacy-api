@@ -1,0 +1,1 @@
+create type diabetes as enum ('TYPE1', 'TYPE2');
